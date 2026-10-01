@@ -1,0 +1,7 @@
+{# Copyright 2026 Joey Parrish #}
+{# SPDX-License-Identifier: GPL-3.0-or-later #}
+{% extends "base.html" %}
+{% block body %}
+<p>{{ message }}</p>
+{% if retry %}<p><a href="/login">Sign in with Google</a></p>{% else %}<p><a href="/">Back</a></p>{% endif %}
+{% endblock %}

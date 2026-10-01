@@ -1,0 +1,15 @@
+{# Copyright 2026 Joey Parrish #}
+{# SPDX-License-Identifier: GPL-3.0-or-later #}
+{% extends "base.html" %}
+{% block body %}
+<h2>Edit {{ source.label }}</h2>
+<form method="post">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <label>Label <input name="label" value="{{ source.label }}" required></label>
+  <label>Color <select name="color">
+    <option {% if not source.color %}selected{% endif %}>default</option>
+    {% for c in colors %}<option {% if c == source.color %}selected{% endif %}>{{ c }}</option>{% endfor %}
+  </select></label>
+  <button>Save</button> <a href="/">Cancel</a>
+</form>
+{% endblock %}

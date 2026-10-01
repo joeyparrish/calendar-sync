@@ -1,0 +1,16 @@
+{
+  "kind": "calendar#freeBusy",
+  "timeMin": "2026-10-02T16:29:14.914Z",
+  "timeMax": "2026-11-28T16:29:14.914Z",
+  "calendars": {
+    "someone@example.com": {
+      "errors": [
+        {
+          "domain": "global",
+          "reason": "notFound"
+        }
+      ],
+      "busy": []
+    }
+  }
+}

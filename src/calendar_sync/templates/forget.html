@@ -1,0 +1,11 @@
+{# Copyright 2026 Joey Parrish #}
+{# SPDX-License-Identifier: GPL-3.0-or-later #}
+{% extends "base.html" %}
+{% block body %}
+<h2>Remove my data</h2>
+<p>This deletes your upcoming busy blocks, your sources and settings, and Calendar Sync's access to your Google account.</p>
+<form method="post" action="/forget">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <button data-busy="Removing…">Remove my data</button> <a href="/">Cancel</a>
+</form>
+{% endblock %}

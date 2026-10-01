@@ -1,0 +1,6 @@
+project_id     = "my-project-id"
+region         = "us-west1"
+allowed_domain = "example.com"
+admin_email    = "admin@example.com"
+custom_domain  = "" # optional, e.g. "calsync.example.com"
+image          = "us-west1-docker.pkg.dev/my-project-id/calendar-sync/app:v1"

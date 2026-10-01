@@ -1,0 +1,66 @@
+{# Copyright 2026 Joey Parrish #}
+{# SPDX-License-Identifier: GPL-3.0-or-later #}
+{% extends "base.html" %}
+{% block body %}
+<p class="muted">Signed in as {{ account.email }}.
+  <form class="inline" method="post" action="/logout"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button>Sign out</button></form>
+</p>
+{% if account.needs_login %}
+<p class="note">Google stopped accepting Calendar Sync's access. <a href="/login?consent=1">Sign in again</a> to resume syncing.</p>
+{% endif %}
+<form method="post" action="/sync-now"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button data-busy="Syncing…">Sync now</button></form>
+
+<h2>Destination calendar</h2>
+{% if calendars is none %}
+<p class="muted">Couldn't load your calendars from Google right now. Try reloading in a minute.</p>
+{% else %}
+<form method="post" action="/calendar">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <select name="calendar_id">
+    {% for c in calendars %}
+    <option value="{{ c.id }}" {% if c.id == account.calendar_id or (c.primary and account.calendar_id == "primary") %}selected{% endif %}>{{ c.summary }} ({{ c.id }})</option>
+    {% endfor %}
+  </select>
+  <button data-busy="Switching…">Use this calendar</button>
+</form>
+{% endif %}
+
+<h2>Sources</h2>
+{% if sources %}
+<table>
+  <tr><th>Label</th><th>Calendar</th><th>Color</th><th>Status</th><th></th></tr>
+  {% for s in sources %}
+  <tr>
+    <td>{{ s.label }}</td>
+    <td>{{ s.display }}</td>
+    <td>{{ s.color or "default" }}</td>
+    <td class="muted">{% if s.last_error %}Error: {{ s.last_error }}{% elif s.last_success %}Synced {{ s.last_success.strftime("%Y-%m-%d %H:%M UTC") }}{% else %}Not synced yet{% endif %}</td>
+    <td>
+      <a href="/sources/{{ s.id }}/edit">Edit</a>
+      <form class="inline" method="post" action="/sources/{{ s.id }}/remove"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button data-busy="Removing…">Remove</button></form>
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+{% else %}
+<p class="muted">No sources yet.</p>
+{% endif %}
+
+{% for kind, legend, field, hint in [
+  ("google", "Add a Google calendar", "Its email address", "It must share free/busy with you."),
+  ("ics", "Add an ICS link (e.g. Outlook)", "ICS link", "Publish it with \"Can view when I'm busy\".")] %}
+<form method="post" action="/sources">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <input type="hidden" name="kind" value="{{ kind }}">
+  <fieldset>
+    <legend>{{ legend }}</legend>
+    <label>{{ field }} <input name="location" required size="40"></label>
+    <span class="muted">{{ hint }}</span>
+    <label>Label <input name="label" required placeholder="Work"></label>
+    <label>Color <select name="color"><option>default</option>{% for c in colors %}<option>{{ c }}</option>{% endfor %}</select></label>
+    <button>Add</button>
+  </fieldset>
+</form>
+{% endfor %}
+<p class="muted"><a href="/forget">Remove my data</a></p>
+{% endblock %}
